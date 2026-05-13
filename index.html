@@ -58,18 +58,19 @@
     </div>
 
     <script>
-        function refreshWidget(elementId) {
-            var widget = document.getElementById(elementId);
-            if (widget && widget.src) {
-                var baseSrc = widget.src.split('?')[0];
-                widget.src = baseSrc + "?t=" + new Date().getTime();
+    function refreshWidgets() {
+        const widgets = ['moving-top', 'static-top', 'goal-bar'];
+        
+        widgets.forEach(id => {
+            const iframe = document.getElementById(id);
+            if (iframe) {
+                const currentSrc = iframe.src.split('?')[0];
+                // Dodajemy unikalny parametr czasowy, aby oszukać pamięć cache
+                iframe.src = currentSrc + "?update=" + new Date().getTime();
             }
-        }
-        setInterval(function() {
-            refreshWidget('moving-top');
-            refreshWidget('static-top');
-            refreshWidget('goal-bar');
-        }, 60000);
-    </script>
-</body>
-</html>
+        });
+    }
+
+    // Odświeżaj co 30 sekund (30000 ms)
+    setInterval(refreshWidgets, 30000);
+</script>
