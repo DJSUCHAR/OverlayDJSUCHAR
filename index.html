@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            overflow: hidden; background: transparent; 
+        }
+        
+        .overlay-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('file:///Users/djsuchar/Desktop/Ramka%20Stream%20(1).png'); 
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        iframe { position: absolute; border: none; background: transparent; overflow: hidden; }
+
+        /* --- PRECYZYJNE USTAWIENIA DLA SUCHARTEAM --- */
+
+        #alerts { top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
+
+        /* Zegar - wycentrowany i podniesiony */
+        #timer { 
+            bottom: 5.5%; left: 50.0%; transform: translateX(-50%); 
+            width: 180px; height: 50px; z-index: 50; 
+        }
+
+        /* Ruchomy Top - przesunięty do środka czarnego pola */
+        #moving-top { 
+            bottom: 8.0%; left: 7.5%; 
+            width: 19%; height: 45px; z-index: 40; 
+        }
+
+        /* Pasek Energii - przesunięty do środka czarnego pola */
+        #goal-bar { 
+            bottom: 9.5%; right: -1.5%; 
+            width: 35%; height: 75px; z-index: 30; 
+        }
+
+        /* Lista Top - dopasowana do lewej ramki */
+        #static-top { 
+            top: 7%; left: 2%; 
+            width: 15%; height: 31%; z-index: 20; 
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay-container">
+        <iframe id="alerts" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" scrolling="no"></iframe>
+        <iframe id="timer" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
+        <iframe id="moving-top" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
+        <iframe id="goal-bar" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
+        <iframe id="static-top" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
+    </div>
+
+    <script>
+        function refreshWidget(elementId) {
+            var widget = document.getElementById(elementId);
+            if (widget && widget.src) {
+                var baseSrc = widget.src.split('?')[0];
+                widget.src = baseSrc + "?t=" + new Date().getTime();
+            }
+        }
+        setInterval(function() {
+            refreshWidget('moving-top');
+            refreshWidget('static-top');
+            refreshWidget('goal-bar');
+        }, 60000);
+    </script>
+</body>
+</html>
