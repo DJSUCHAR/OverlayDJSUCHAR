@@ -28,22 +28,12 @@
         /* --- POZYCJE DLA SUCHARTEAM --- */
         #alerts { top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
         
-        /* Pozycja Licznika Widzów (Nad zegarem) */
         .pos-viewer { bottom: 10.5%; left: 50.0%; transform: translateX(-50%); width: 200px; height: 60px; }
-        
-        /* Zegar */
         .pos-timer { bottom: 5.5%; left: 50.0%; transform: translateX(-50%); width: 180px; height: 50px; }
-        
-        /* Ruchomy Top */
         .pos-moving-top { bottom: 8.0%; left: 7.5%; width: 19%; height: 45px; }
-        
-        /* Pasek Energii */
         .pos-goal-bar { bottom: 9.5%; right: -1.5%; width: 35%; height: 75px; }
-        
-        /* Lista Top */
         .pos-static-top { top: 7%; left: 2%; width: 15%; height: 31%; }
 
-        /* Warstwy */
         .group-a { z-index: 100; opacity: 1; }
         .group-b { z-index: 90; opacity: 0; }
     </style>
@@ -81,8 +71,10 @@
         const nextGroup = (activeGroup === 'a') ? 'b' : 'a';
         const timestamp = new Date().getTime();
 
-        // Odświeżanie ukrytej grupy
-        document.getElementById('viewer_' + nextGroup).src = urls.viewer + "&t=" + timestamp;
+        // Licznik widzów ładujemy BEZ dodatkowych parametrów (czysty link)
+        document.getElementById('viewer_' + nextGroup).src = urls.viewer;
+        
+        // Reszta z PayMedia nadal potrzebuje timestampu do odświeżania
         document.getElementById('timer_' + nextGroup).src = urls.timer + "?t=" + timestamp;
         document.getElementById('moving_' + nextGroup).src = urls.moving + "?t=" + timestamp;
         document.getElementById('goal_' + nextGroup).src = urls.goal + "?t=" + timestamp;
@@ -92,13 +84,11 @@
             const currentElements = document.getElementsByClassName('group-' + activeGroup);
             const nextElements = document.getElementsByClassName('group-' + nextGroup);
 
-            // Nowa warstwa na górę i pokazujemy
             for (let el of nextElements) {
                 el.style.zIndex = "100";
                 el.style.opacity = "1";
             }
 
-            // Stara warstwa pod spód i chowamy
             setTimeout(() => {
                 for (let el of currentElements) {
                     el.style.zIndex = "90";
@@ -107,10 +97,10 @@
                 activeGroup = nextGroup;
             }, 1000);
 
-        }, 12000); // 12 sekund na wczytanie wszystkiego
+        }, 10000); 
     }
 
-    setInterval(switchGroups, 60000); // Pełny cykl co minutę
+    setInterval(switchGroups, 60000);
     </script>
 </body>
 </html>
