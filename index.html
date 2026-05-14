@@ -1,253 +1,127 @@
 <!DOCTYPE html>
-
 <html lang="pl">
-
 <head>
-
     <meta charset="UTF-8">
-
     <style>
-
         body, html { 
-
             margin: 0; padding: 0; width: 100%; height: 100%; 
-
             overflow: hidden; background: transparent; 
-
         }
-
         
-
         .overlay-container {
-
             position: relative;
-
             width: 100vw;
-
             height: 100vh;
-
             background: transparent;
-
         }
-
-
 
         iframe { 
-
             position: absolute; 
-
             border: none; 
-
             background: transparent; 
-
             overflow: hidden; 
-
         }
-
-
 
         /* --- LICZNIK WIDZÓW TIKTOK (TikFinity) --- */
-
-        /* Przeniesiony na dół, na lewo od zegarka */
-
         #tiktok-count {
-
-            bottom: 2%;      /* Podobna wysokość co timer */
-
-            left: 29%;       /* Pozycja na lewo od środka (zegarek jest na 50%) */
-
+            bottom: 2%;      
+            left: 29%;       
             width: 150px;
-
             height: 60px;
-
             z-index: 1000;
-
         }
-
-
 
         /* --- NINJA CHAT --- */
-
         #ninja-chat {
-
             bottom: 15%;
-
             right: 2%;
-
             width: 400px;
-
             height: 600px;
-
             z-index: 500;
-
         }
-
-
 
         /* --- POZYCJE PAYMEDIA --- */
-
-        #alerts { top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
-
+        /* Usunięto styl #alerts */
         
-
-        /* Zegarek (Timer) jest na 50% szerokości */
-
         .pos-timer { bottom: 5.5%; left: 50.0%; transform: translateX(-50%); width: 180px; height: 50px; }
-
         .pos-moving-top { bottom: 8.5%; left: 5.0%; width: 22%; height: 45px; }
-
         .pos-goal-bar { bottom: 9.6%; right: -1.5%; width: 35%; height: 79px; }
-
         
-
         .pos-static-top { 
-
             top: 7%; 
-
             left: 2.2%; 
-
             width: 18.0%; 
-
             height: 31%; 
-
             overflow: hidden;
-
             transform: scale(0.95);
-
             transform-origin: top left;
-
         }
 
-
-
         .group-a, .group-b { transition: opacity 5s ease-in-out; }
-
         .group-a { z-index: 100; opacity: 1; }
-
         .group-b { z-index: 90; opacity: 0; }
-
     </style>
-
 </head>
-
 <body>
-
     <div id="main-container" class="overlay-container">
-
         <iframe id="tiktok-count" src="https://tikfinity.zerody.one/widget/viewercount?cid=87665" scrolling="no"></iframe>
-
-        <iframe id="alerts" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" scrolling="no"></iframe>
+        
+        <!-- Usunięto iframe alertów -->
 
         <iframe id="ninja-chat" src="https://socialstream.ninja/featured.html?session=CMjapDkibS&branded&rounded=10&showtime=20000&scale=0.85&showsource" scrolling="no"></iframe>
 
-
-
         <!-- GRUPA A -->
-
         <iframe id="timer_a" class="pos-timer group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
-
         <iframe id="moving_a" class="pos-moving-top group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
-
         <iframe id="goal_a" class="pos-goal-bar group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
-
         <iframe id="static_a" class="pos-static-top group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
 
-
-
         <!-- GRUPA B -->
-
         <iframe id="timer_b" class="pos-timer group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
-
         <iframe id="moving_b" class="pos-moving-top group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
-
         <iframe id="goal_b" class="pos-goal-bar group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
-
         <iframe id="static_b" class="pos-static-top group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
-
     </div>
 
-
-
     <script>
-
     let activeGroup = 'a';
-
     const urls = {
-
         timer: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268",
-
         moving: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277",
-
         goal: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117",
-
         static: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166"
-
     };
 
-
-
     function switchGroups() {
-
         const nextGroup = (activeGroup === 'a') ? 'b' : 'a';
-
         const timestamp = new Date().getTime();
 
-
-
         document.getElementById('timer_' + nextGroup).src = urls.timer + "?t=" + timestamp;
-
         document.getElementById('moving_' + nextGroup).src = urls.moving + "?t=" + timestamp;
-
         document.getElementById('goal_' + nextGroup).src = urls.goal + "?t=" + timestamp;
-
         document.getElementById('static_' + nextGroup).src = urls.static + "?t=" + timestamp;
 
-
-
         setTimeout(() => {
-
             const currentElements = document.getElementsByClassName('group-' + activeGroup);
-
             const nextElements = document.getElementsByClassName('group-' + nextGroup);
 
-
-
             for (let el of nextElements) {
-
                 el.style.zIndex = "100";
-
                 el.style.opacity = "1";
-
             }
 
-
-
             setTimeout(() => {
-
                 for (let el of currentElements) {
-
                     el.style.zIndex = "90";
-
                     el.style.opacity = "0";
-
                 }
-
                 activeGroup = nextGroup;
-
             }, 1000);
 
-
-
         }, 12000); 
-
     }
 
-
-
     setInterval(switchGroups, 60000);
-
     </script>
-
 </body>
-
 </html>
