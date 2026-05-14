@@ -22,18 +22,28 @@
             border: none; 
             background: transparent; 
             overflow: hidden; 
-            /* Bardzo długi czas przejścia dla miękkości */
             transition: opacity 5s ease-in-out; 
         }
 
-        /* --- POZYCJE --- */
+        /* --- POZYCJE DLA SUCHARTEAM --- */
         #alerts { top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
+        
+        /* Pozycja Licznika Widzów (Nad zegarem) */
+        .pos-viewer { bottom: 10.5%; left: 50.0%; transform: translateX(-50%); width: 200px; height: 60px; }
+        
+        /* Zegar */
         .pos-timer { bottom: 5.5%; left: 50.0%; transform: translateX(-50%); width: 180px; height: 50px; }
+        
+        /* Ruchomy Top */
         .pos-moving-top { bottom: 8.0%; left: 7.5%; width: 19%; height: 45px; }
+        
+        /* Pasek Energii */
         .pos-goal-bar { bottom: 9.5%; right: -1.5%; width: 35%; height: 75px; }
+        
+        /* Lista Top */
         .pos-static-top { top: 7%; left: 2%; width: 15%; height: 31%; }
 
-        /* Grupa A jest na górze, Grupa B pod nią */
+        /* Warstwy */
         .group-a { z-index: 100; opacity: 1; }
         .group-b { z-index: 90; opacity: 0; }
     </style>
@@ -43,12 +53,14 @@
         <iframe id="alerts" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" scrolling="no"></iframe>
         
         <!-- GRUPA A -->
+        <iframe id="viewer_a" class="pos-viewer group-a" src="https://streamlabs.com/widgets/viewer-count?token=5BA598C1BBB5FC309F12" scrolling="no"></iframe>
         <iframe id="timer_a" class="pos-timer group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
         <iframe id="moving_a" class="pos-moving-top group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
         <iframe id="goal_a" class="pos-goal-bar group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
         <iframe id="static_a" class="pos-static-top group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
 
         <!-- GRUPA B -->
+        <iframe id="viewer_b" class="pos-viewer group-b" src="https://streamlabs.com/widgets/viewer-count?token=5BA598C1BBB5FC309F12" scrolling="no"></iframe>
         <iframe id="timer_b" class="pos-timer group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
         <iframe id="moving_b" class="pos-moving-top group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
         <iframe id="goal_b" class="pos-goal-bar group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
@@ -58,6 +70,7 @@
     <script>
     let activeGroup = 'a';
     const urls = {
+        viewer: "https://streamlabs.com/widgets/viewer-count?token=5BA598C1BBB5FC309F12",
         timer: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268",
         moving: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277",
         goal: "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117",
@@ -68,24 +81,24 @@
         const nextGroup = (activeGroup === 'a') ? 'b' : 'a';
         const timestamp = new Date().getTime();
 
-        // 1. Ładujemy niewidoczną grupę w tle
+        // Odświeżanie ukrytej grupy
+        document.getElementById('viewer_' + nextGroup).src = urls.viewer + "&t=" + timestamp;
         document.getElementById('timer_' + nextGroup).src = urls.timer + "?t=" + timestamp;
         document.getElementById('moving_' + nextGroup).src = urls.moving + "?t=" + timestamp;
         document.getElementById('goal_' + nextGroup).src = urls.goal + "?t=" + timestamp;
         document.getElementById('static_' + nextGroup).src = urls.static + "?t=" + timestamp;
 
-        // 2. Dajemy 10 sekund na pełny load w tle
         setTimeout(() => {
             const currentElements = document.getElementsByClassName('group-' + activeGroup);
             const nextElements = document.getElementsByClassName('group-' + nextGroup);
 
-            // 3. LOGIKA OVERLAP: Najpierw pokazujemy nową warstwę (wjeżdża nad starą)
+            // Nowa warstwa na górę i pokazujemy
             for (let el of nextElements) {
                 el.style.zIndex = "100";
                 el.style.opacity = "1";
             }
 
-            // 4. Po krótkiej chwili (np. 1s) zaczynamy chować starą warstwę pod spodem
+            // Stara warstwa pod spód i chowamy
             setTimeout(() => {
                 for (let el of currentElements) {
                     el.style.zIndex = "90";
@@ -94,10 +107,10 @@
                 activeGroup = nextGroup;
             }, 1000);
 
-        }, 10000); 
+        }, 12000); // 12 sekund na wczytanie wszystkiego
     }
 
-    setInterval(switchGroups, 60000);
+    setInterval(switchGroups, 60000); // Pełny cykl co minutę
     </script>
 </body>
 </html>
