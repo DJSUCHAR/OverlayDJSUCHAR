@@ -17,106 +17,73 @@
             background-repeat: no-repeat;
         }
 
-        /* Styl dla ramek - dodajemy płynne przejście opacity */
+        /* Ramki są zawsze na tym samym miejscu, jedna nad drugą */
         iframe { 
             position: absolute; 
             border: none; 
             background: transparent; 
             overflow: hidden; 
-            transition: opacity 0.5s ease-in-out; 
+            transition: opacity 1s ease-in-out; 
         }
 
-        /* --- USTAWIENIA DLA SUCHARTEAM --- */
-
+        /* --- USTAWIENIA POZYCJI (nie zmieniaj ich) --- */
         #alerts { top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
-
-        #timer { 
-            bottom: 5.5%; left: 50.0%; transform: translateX(-50%); 
-            width: 180px; height: 50px; z-index: 50; 
-        }
-
-        #moving-top { 
-            bottom: 8.0%; left: 7.5%; 
-            width: 19%; height: 45px; z-index: 40; 
-        }
-
-        #goal-bar { 
-            bottom: 9.5%; right: -1.5%; 
-            width: 35%; height: 75px; z-index: 30; 
-        }
-
-        #static-top { 
-            top: 7%; left: 2%; 
-            width: 15%; height: 31%; z-index: 20; 
-        }
+        .pos-timer { bottom: 5.5%; left: 50.0%; transform: translateX(-50%); width: 180px; height: 50px; }
+        .pos-moving-top { bottom: 8.0%; left: 7.5%; width: 19%; height: 45px; }
+        .pos-goal-bar { bottom: 9.5%; right: -1.5%; width: 35%; height: 75px; }
+        .pos-static-top { top: 7%; left: 2%; width: 15%; height: 31%; }
     </style>
 </head>
 <body>
     <div id="main-container" class="overlay-container">
         <iframe id="alerts" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" scrolling="no"></iframe>
         
-        <iframe id="timer" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
-        <iframe id="moving-top" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
-        <iframe id="goal-bar" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
-        <iframe id="static-top" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
+        <iframe id="timer" class="pos-timer" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
+        <iframe id="moving-top" class="pos-moving-top" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
+        <iframe id="goal-bar" class="pos-goal-bar" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
+        <iframe id="static-top" class="pos-static-top" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
     </div>
 
     <script>
-    function smoothRefresh(id, baseUrl) {
+    function refreshWithDelay(id, baseUrl, className) {
         const container = document.getElementById('main-container');
         const oldIframe = document.getElementById(id);
-        
         if (!oldIframe) return;
 
-        // 1. Tworzymy nową ramkę "w tle"
+        // 1. Tworzymy nową ramkę pod spodem (niższy z-index)
         const newIframe = document.createElement('iframe');
-        newIframe.src = baseUrl + "?u=" + new Date().getTime();
-        newIframe.id = id + "_new"; // Tymczasowe ID
-        newIframe.style.opacity = "0"; // Ukryta na starcie
-        newIframe.style.position = oldIframe.style.position;
-        newIframe.style.bottom = oldIframe.style.bottom;
-        newIframe.style.top = oldIframe.style.top;
-        newIframe.style.left = oldIframe.style.left;
-        newIframe.style.right = oldIframe.style.right;
-        newIframe.style.transform = oldIframe.style.transform;
-        newIframe.style.width = oldIframe.style.width;
-        newIframe.style.height = oldIframe.style.height;
-        newIframe.style.zIndex = oldIframe.style.zIndex;
+        newIframe.src = baseUrl + "?t=" + new Date().getTime();
+        newIframe.className = className;
+        newIframe.style.zIndex = parseInt(window.getComputedStyle(oldIframe).zIndex) - 1;
+        newIframe.style.opacity = "0";
         newIframe.scrolling = "no";
+        newIframe.id = id + "_temp";
 
         container.appendChild(newIframe);
 
-        // 2. Czekamy, aż nowa ramka się załaduje
-        newIframe.onload = function() {
-            // 3. Płynna zamiana
+        // 2. Sztywne opóźnienie (3 sekundy) na wczytanie zawartości
+        setTimeout(() => {
             newIframe.style.opacity = "1";
             oldIframe.style.opacity = "0";
 
-            // 4. Usuwamy starą ramkę po zakończeniu animacji (0.5s)
+            // 3. Po animacji usuwamy starą i porządkujemy ID
             setTimeout(() => {
                 oldIframe.remove();
-                newIframe.id = id; // Przywracamy oryginalne ID
-            }, 500);
-        };
+                newIframe.id = id;
+                newIframe.style.zIndex = parseInt(newIframe.style.zIndex) + 1;
+            }, 1100);
+        }, 3000); 
     }
 
-    function refreshAll() {
-        // Lista widgetów i ich bazowe linki
-        const config = {
-            'timer': "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268",
-            'moving-top': "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277",
-            'goal-bar': "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117",
-            'static-top': "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166"
-        };
-
-        for (let id in config) {
-            smoothRefresh(id, config[id]);
-        }
+    function runUpdate() {
+        refreshWithDelay('timer', "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268", "pos-timer");
+        refreshWithDelay('moving-top', "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277", "pos-moving-top");
+        refreshWithDelay('goal-bar', "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117", "pos-goal-bar");
+        refreshWithDelay('static-top', "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166", "pos-static-top");
     }
 
-    // Odświeżanie co 30 sekund - przy płynnym przejściu może być rzadziej, 
-    // bo i tak nie widać momentu zmiany.
-    setInterval(refreshAll, 30000);
+    // Odświeżanie co 30 sekund
+    setInterval(runUpdate, 30000);
     </script>
 </body>
 </html>
