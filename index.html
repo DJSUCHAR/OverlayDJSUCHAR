@@ -59,18 +59,28 @@
 
     <script>
     function refreshWidgets() {
-        const widgets = ['moving-top', 'static-top', 'goal-bar'];
+        // Dodałem 'timer' do listy, aby zegar też się odświeżał
+        const widgets = ['timer', 'moving-top', 'static-top', 'goal-bar'];
         
         widgets.forEach(id => {
             const iframe = document.getElementById(id);
             if (iframe) {
-                const currentSrc = iframe.src.split('?')[0];
-                // Dodajemy unikalny parametr czasowy, aby oszukać pamięć cache
-                iframe.src = currentSrc + "?update=" + new Date().getTime();
+                const baseSrc = iframe.src.split('?')[0];
+                
+                // Metoda wymuszająca przeładowanie na urządzeniach mobilnych/Androidzie
+                iframe.style.display = 'none'; // Chwilowe ukrycie, żeby wymusić przerysowanie
+                iframe.src = 'about:blank';
+                
+                setTimeout(() => {
+                    iframe.src = baseSrc + "?update=" + new Date().getTime();
+                    iframe.style.display = 'block';
+                }, 150);
             }
         });
     }
 
-    // Odświeżaj co 30 sekund (30000 ms)
-    setInterval(refreshWidgets, 30000);
-</script>
+    // Odświeżaj co 15 sekund, żeby SucharTeam widział zmiany niemal na bieżąco
+    setInterval(refreshWidgets, 15000);
+    </script>
+</body>
+</html>
