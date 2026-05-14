@@ -8,13 +8,12 @@
             overflow: hidden; background: transparent; 
         }
         
+        /* Kontener jest teraz przezroczysty - ramkę dodasz w YoloBoxie */
         .overlay-container {
             position: relative;
             width: 100vw;
             height: 100vh;
-            background-image: url('Ramka.png'); 
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
+            background: transparent;
         }
 
         iframe { 
@@ -40,14 +39,13 @@
         .pos-moving-top { bottom: 8.5%; left: 5.0%; width: 22%; height: 45px; }
         .pos-goal-bar { bottom: 9.8%; right: -1.5%; width: 35%; height: 75px; }
         
-        /* POPRAWIONY TOP DONATE (Lista ze zdjęcia) */
+        /* TOP DONATE - Zachowane Twoje ustawienia szerokości i skali */
         .pos-static-top { 
             top: 7%; 
-            left: 2.2%; /* Delikatne przesunięcie od lewej krawędzi */
-            width: 18.0%; /* Zmniejszona szerokość, aby wymusić margines */
+            left: 2.2%; 
+            width: 18.0%; 
             height: 31%; 
             overflow: hidden;
-            /* SKALOWANIE: Zmniejszamy treść widżetu do 85%, żeby nicki się mieściły */
             transform: scale(0.95);
             transform-origin: top left;
         }
