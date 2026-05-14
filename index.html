@@ -17,23 +17,22 @@
             background-repeat: no-repeat;
         }
 
-        /* Wszystkie ramki mają płynne przejście 2-sekundowe */
+        /* Bardzo długie, 4-sekundowe przenikanie dla maksymalnej płynności */
         iframe { 
             position: absolute; 
             border: none; 
             background: transparent; 
             overflow: hidden; 
-            transition: opacity 2s ease-in-out; 
+            transition: opacity 4s ease-in-out; 
         }
 
-        /* --- POZYCJE --- */
+        /* --- POZYCJE DLA SUCHARTEAM --- */
         #alerts { top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; }
         .pos-timer { bottom: 5.5%; left: 50.0%; transform: translateX(-50%); width: 180px; height: 50px; }
         .pos-moving-top { bottom: 8.0%; left: 7.5%; width: 19%; height: 45px; }
         .pos-goal-bar { bottom: 9.5%; right: -1.5%; width: 35%; height: 75px; }
         .pos-static-top { top: 7%; left: 2%; width: 15%; height: 31%; }
 
-        /* Grupa B jest domyślnie ukryta */
         .group-b { opacity: 0; }
     </style>
 </head>
@@ -41,13 +40,11 @@
     <div id="main-container" class="overlay-container">
         <iframe id="alerts" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" scrolling="no"></iframe>
         
-        <!-- GRUPA A (Widoczna na start) -->
         <iframe id="timer_a" class="pos-timer group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
         <iframe id="moving_a" class="pos-moving-top group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
         <iframe id="goal_a" class="pos-goal-bar group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
         <iframe id="static_a" class="pos-static-top group-a" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25166" scrolling="no"></iframe>
 
-        <!-- GRUPA B (Ukryta, ładuje się w tle) -->
         <iframe id="timer_b" class="pos-timer group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" scrolling="no"></iframe>
         <iframe id="moving_b" class="pos-moving-top group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25277" scrolling="no"></iframe>
         <iframe id="goal_b" class="pos-goal-bar group-b" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" scrolling="no"></iframe>
@@ -67,27 +64,27 @@
         const nextGroup = (activeGroup === 'a') ? 'b' : 'a';
         const timestamp = new Date().getTime();
 
-        // 1. Odświeżamy grupę, która jest obecnie NIEWIDOCZNA
+        // 1. Rozpoczynamy ładowanie nowej grupy w tle
         document.getElementById('timer_' + nextGroup).src = urls.timer + "?t=" + timestamp;
         document.getElementById('moving_' + nextGroup).src = urls.moving + "?t=" + timestamp;
         document.getElementById('goal_' + nextGroup).src = urls.goal + "?t=" + timestamp;
         document.getElementById('static_' + nextGroup).src = urls.static + "?t=" + timestamp;
 
-        // 2. Czekamy 5 sekund, aż ukryta grupa na pewno się załaduje
+        // 2. Czekamy aż 10 sekund, żeby mieć pewność, że wszystko się wczytało
         setTimeout(() => {
             const elementsToHide = document.getElementsByClassName('group-' + activeGroup);
             const elementsToShow = document.getElementsByClassName('group-' + nextGroup);
 
-            // 3. Płynne przenikanie (2 sekundy zgodnie z CSS)
+            // 3. Bardzo powolne przenikanie
             for (let el of elementsToShow) el.style.opacity = "1";
             for (let el of elementsToHide) el.style.opacity = "0";
 
             activeGroup = nextGroup;
-        }, 5000); 
+        }, 10000); 
     }
 
-    // Odświeżanie co 40 sekund, żeby dać czas na powolne przenikanie
-    setInterval(switchGroups, 40000);
+    // Pełny cykl co 50 sekund
+    setInterval(switchGroups, 50000);
     </script>
 </body>
 </html>
