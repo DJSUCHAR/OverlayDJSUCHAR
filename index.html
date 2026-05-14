@@ -8,7 +8,7 @@
             overflow: hidden; background: transparent; 
         }
         
-        /* Kontener przezroczysty - ramkę nakładasz w YoloBoxie */
+        /* Kontener jest teraz przezroczysty - ramkę dodasz w YoloBoxie */
         .overlay-container {
             position: relative;
             width: 100vw;
@@ -21,15 +21,6 @@
             border: none; 
             background: transparent; 
             overflow: hidden; 
-        }
-
-        /* --- LICZNIK WIDZÓW (Streamlabs) --- */
-        #viewer-count {
-            top: 2%; 
-            right: 18%; /* Umieszczony obok logotypu lub w górnej sekcji */
-            width: 150px;
-            height: 50px;
-            z-index: 1000;
         }
 
         /* --- NINJA CHAT --- */
@@ -48,7 +39,7 @@
         .pos-moving-top { bottom: 8.5%; left: 5.0%; width: 22%; height: 45px; }
         .pos-goal-bar { bottom: 9.8%; right: -1.5%; width: 35%; height: 75px; }
         
-        /* TOP DONATE (Nieruchomy) */
+        /* TOP DONATE - Zachowane Twoje ustawienia szerokości i skali */
         .pos-static-top { 
             top: 7%; 
             left: 2.2%; 
@@ -66,13 +57,6 @@
 </head>
 <body>
     <div id="main-container" class="overlay-container">
-        <!-- Widżet Licznika Widzów -->
-        <iframe id="viewer-count" 
-            src="https://streamlabs.com/widgets/viewer-count?token=5BA598C1BBB5FC309F12" 
-            sclogging="no" 
-            sandbox="allow-scripts allow-same-origin">
-        </iframe>
-
         <iframe id="alerts" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" scrolling="no"></iframe>
         <iframe id="ninja-chat" src="https://socialstream.ninja/featured.html?session=CMjapDkibS&branded&rounded=10&showtime=20000&scale=0.85&showsource" scrolling="no"></iframe>
 
