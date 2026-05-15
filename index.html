@@ -2,68 +2,67 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Multi-Overlay Container for YoloBox</title>
+    <title>Paymedia Multi-Overlay Container</title>
     <style>
-        /* Reset i tło przezroczyste */
+        /* Pełna przezroczystość i dopasowanie do ekranu streamu */
         body, html { 
             margin: 0; 
             padding: 0; 
-            width: 100%; 
-            height: 100%; 
+            width: 1920px; 
+            height: 1080px; 
             overflow: hidden; 
-            background-color: rgba(0, 0, 0, 0); 
+            background-color: transparent !important; 
         }
 
-        /* Kontener na nakładki */
-        .overlay-container {
-            position: relative;
-            width: 1920px; /* Dopasuj do rozdzielczości streamu */
-            height: 1080px;
-        }
-
-        /* Styl dla każdej ramki */
-        iframe {
+        /* Kontenery na poszczególne widżety, nakładane na siebie */
+        .paymedia-wrapper {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             border: none;
-            display: block;
+            background: transparent !important;
         }
 
-        /* Kolejność warstw (opcjonalnie) */
-        #layer1 { z-index: 10; }
-        #layer2 { z-index: 20; }
-        #layer3 { z-index: 30; }
+        #widget-main { z-index: 10; }
+        #widget-1 { z-index: 20; }
+        #widget-2 { z-index: 30; }
     </style>
 </head>
 <body>
 
-    <div class="overlay-container">
-        <iframe id="layer1" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117" allow="autoplay"></iframe>
-        <iframe id="layer2" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268" allow="autoplay"></iframe>
-        <iframe id="layer3" src="https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27" allow="autoplay"></iframe>
-    </div>
+    <!-- Dynamiczne kontenery zamiast sztywnych iframe -->
+    <div id="widget-main" class="paymedia-wrapper"></div>
+    <div id="widget-1" class="paymedia-wrapper"></div>
+    <div id="widget-2" class="paymedia-wrapper"></div>
 
     <script>
-        // Funkcja synchronizująca odświeżanie
-        function refreshAll() {
-            console.log("Synchronizowane odświeżanie nakładek...");
-            const layers = ['layer1', 'layer2', 'layer3'];
-            layers.forEach(id => {
-                const frame = document.getElementById(id);
-                if (frame) {
-                    const currentSrc = frame.src;
-                    frame.src = ''; // Czyścimy src, aby wymusić przeładowanie
-                    frame.src = currentSrc;
-                }
-            });
+        // Definiujemy Twoje unikalne linki z Paymedia
+        const urlMain = "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27";
+        const urlWidget1 = "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,48117";
+        const urlWidget2 = "https://www.paymedia.pl/integracja/11507,b329c7a541f4168d382b996801e1ca27,25268";
+
+        // Funkcja ładująca widżety tak, aby współdzieliły sesję przeglądarki
+        function loadPaymediaWidgets() {
+            try {
+                document.getElementById('widget-main').innerHTML = `<iframe src="${urlMain}" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>`;
+                document.getElementById('widget-1').innerHTML = `<iframe src="${urlWidget1}" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>`;
+                document.getElementById('widget-2').innerHTML = `<iframe src="${urlWidget2}" style="width:100%; height:100%; border:none;" allow="autoplay"></iframe>`;
+                console.log("Widżety Paymedia zostały załadowane wspólnie.");
+            } catch (e) {
+                console.error("Błąd podczas ładowania widżetów:", e);
+            }
         }
 
-        // Ustawienie czasu odświeżania (np. co 5 minut = 300000 ms)
-        // Jeśli nie chcesz automatycznego odświeżania, usuń linię poniżej
-        setInterval(refreshAll, 300000); 
+        // Uruchomienie ładowania po otwarciu strony
+        window.onload = loadPaymediaWidgets;
+
+        /* 
+          Wymuszenie synchronicznego odświeżania całej trójki co 10 minut (600000 ms).
+          Zapobiega to rozjeżdżaniu się skryptów w tle na YoloBoxie.
+        */
+        setInterval(loadPaymediaWidgets, 600000);
     </script>
 </body>
 </html>
